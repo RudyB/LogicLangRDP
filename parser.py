@@ -14,6 +14,7 @@ Note: This project is based on Lexical Analysis HW code from CPSC 326
 from mytoken import Token
 from error import Error
 
+
 class Parser(object):
     """ Parses Tokens and Lexemes
 
@@ -30,23 +31,22 @@ class Parser(object):
         """ Calls for the next token from the `lexer` and stores it to `self.current_token` """
         self.current_token = self.lexer.next_token()
 
-    def expect(self, token_type):
+    def __expect(self, token_type):
         """ Checks to see if the current token is what is syntactically expected
         :param token_type: the expected token type of type `Token`
         """
         if self.current_token == token_type:
             self.__advance()
         else:
-            raise "was expecting a %s" % token_type
+            raise Error("was expecting a %s" % token_type)
 
     def parse(self):
         """
-        Inializes the user defined string to memory then
-        begins Sentence Parsing
+        Begins Sentence Parsing
         """
         self.__advance()
         self.__parse_sentence()
-        self.expect(Token.END)
+        self.__expect(Token.END)
 
     def __parse_sentence(self):
         if not self.current_token == Token.END:
@@ -54,69 +54,51 @@ class Parser(object):
             self.__parse_sentence()
 
     def __sentence(self):
-        if (self.current_token == Token.TRUTH or
-                    self.current_token == Token.PROPOSITION):
-            self.__simple_sentence()
-        elif (self.current_token == Token.NEGATION or
-              self.current_token == Token.AND or
-              self.current_token == Token.OR or
-              self.current_token == Token.IMPLICATION or
-              self.current_token == Token.EQUALITY):
-            self.__complex_sentence()
-        else:
-            raise Error("Sentence does not follow Grammar")
-
-    def __simple_sentence(self):
-        if self.current_token == Token.TRUTH:
-            self.__truth()
-        else:
-            self.expect(Token.PROPOSITION)
-
-    def __complex_sentence(self):
         if self.current_token == Token.NEGATION:
             self.__negation()
+        elif self.current_token == Token.PROPOSITION:
+            self.__proposition()
         else:
-            if self.current_token == Token.AND:
-                self.__and()
-            elif self.current_token == Token.OR:
-                self.__or()
-            elif self.current_token == Token.IMPLICATION:
-                self.__implication()
-            elif self.current_token == Token.EQUALITY:
-                self.__equality()
+            self.__truth()
+
+    def __negation(self):
+        self.__expect(Token.NEGATION)
+        self.__sentence()
 
     def __proposition(self):
-        self.expect(Token.PROPOSITION)
-        if self.current_token == Token.AND:
+        self.__expect(Token.PROPOSITION)
+        self.__operation()
+
+    def __truth(self):
+        self.__expect(Token.TRUTH)
+        self.__operation()
+
+    def __operation(self):
+        if (self.current_token == Token.NEGATION or
+                self.current_token == Token.PROPOSITION or
+                self.current_token == Token.TRUTH):
+            raise Error("Sentences must be joined by an operation")
+        elif self.current_token == Token.AND:
             self.__and()
         elif self.current_token == Token.OR:
             self.__or()
+        elif self.current_token == Token.IMPLICATION:
+            self.__implication()
         elif self.current_token == Token.EQUALITY:
             self.__equality()
 
-    def __truth(self):
-        self.expect(Token.TRUTH)
-
-    def __negation(self):
-        self.expect(Token.NEGATION)
-        self.__sentence()
-
     def __and(self):
-        self.expect(Token.AND)
+        self.__expect(Token.AND)
         self.__sentence()
 
     def __or(self):
-        self.expect(Token.OR)
+        self.__expect(Token.OR)
         self.__sentence()
 
     def __implication(self):
-        self.expect(Token.IMPLICATION)
+        self.__expect(Token.IMPLICATION)
         self.__sentence()
 
     def __equality(self):
-        self.expect(Token.EQUALITY)
+        self.__expect(Token.EQUALITY)
         self.__sentence()
-
-
-
-
