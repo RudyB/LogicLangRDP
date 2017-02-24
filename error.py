@@ -10,6 +10,7 @@ Description: A recursive descent parser for logic
 Note: This project is based on Lexical Analysis HW code from CPSC 326
 """
 
+
 class Error(Exception):
     """ Model class of an Error
     :Parameters:

@@ -3,8 +3,9 @@
 Class: CPSC 427-02
 Assignment: Assignment 3
 Team Leader: Rudy Bermudez rbermudez
-Developer 1: Sander Sussee
-Developer 2: Ryan Rozema
+Developer 1: Rudy Bermudez
+Developer 2: Sander Sussee
+Developer 3: Ryan Rozema
 Filename: main.py
 Description: A recursive descent parser for logic
 Note: This project is based on Lexical Analysis HW code from CPSC 326
