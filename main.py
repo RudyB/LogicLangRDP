@@ -30,6 +30,9 @@ Valid Grammar
 """
 
 prompt = """
+
+
+
 Enter "grammar" to see the language grammar
 Enter "end" to quit.
 
@@ -42,19 +45,15 @@ print (grammar)
 
 while run:
     try:
-        isCorrect = True
         user_input = raw_input(prompt)
         if user_input == "end":
             break
-        lexer = Lexer(user_input)
-        parser = Parser(lexer)
-        parser.parse()
+        elif user_input == "grammar":
+            print(grammar)
+        else:
+           lexer = Lexer(user_input)
+           parser = Parser(lexer)
+           parser.parse()
+           print "\nValid Grammar\n"
     except Error:
-        isCorrect = False
-    if isCorrect:
-        print "\nAnswer: yes\n"
-    else:
-        print "\nAnswer: no\n"
-
-
-
+        print "\nInvalid Grammar\n"
